@@ -3,6 +3,8 @@ const canvas = document.querySelector('.photo');
 const ctx = canvas.getContext('2d');
 const strip = document.querySelector('.strip');
 const snap = document.querySelector('.snap');
+let applyRedEffect = false;
+let applyRgbSplit = false;
 
 function getVideo() {
   navigator.mediaDevices.getUserMedia({ video: true, audio: false })
@@ -35,10 +37,15 @@ function paintToCanvas() {
     // take the pixels out
     let pixels = ctx.getImageData(0, 0, width, height);
     // mess with them
-    // pixels = redEffect(pixels);
-
-    pixels = rgbSplit(pixels);
+    if (applyRedEffect) {
+       pixels = redEffect(pixels);
+    }
+   
+    if (applyRgbSplit) {
+       pixels = rgbSplit(pixels);
     ctx.globalAlpha = 0.1;
+    }
+   
 
     // pixels = greenScreen(pixels);
     // put them back
@@ -62,7 +69,7 @@ function takePhoto() {
 
 function redEffect(pixels) {
   for (let i = 0; i < pixels.data.length; i+=4) {
-    pixels.data[i + 0] = pixels.data[i + 0] + 200; // RED
+    pixels.data[i + 0] = pixels.data[i + 0] + 50; // RED
     pixels.data[i + 1] = pixels.data[i + 1] - 50; // GREEN
     pixels.data[i + 2] = pixels.data[i + 2] * 0.5; // Blue
   }
@@ -83,12 +90,25 @@ const toggleButton = document.getElementById("toggle-button");
 
 // add an event listener to the button
 toggleButton.addEventListener("click", () => {
-  rgbSplit =!rgbSplit; // toggle the flag
+  applyRgbSplit =!applyRgbSplit; // toggle the flag
 
-  if (rgbSplit) {
+  if (applyRgbSplit) {
     console.log("RGB Split is enabled.");
   } else {
     console.log("RGB Split is disabled.");
+  }
+});
+// get the button element
+const toggleButton2 = document.getElementById("toggle-button2");
+
+// add an event listener to the button
+toggleButton2.addEventListener("click", () => {
+  applyRedEffect = !applyRedEffect; // toggle the flag
+
+  if (applyRedEffect) {
+    console.log("Red Effect is enabled.");
+  } else {
+    console.log("Red Effect is disabled.");
   }
 });
 
